@@ -228,6 +228,16 @@ func PrintDonationRecords() {
 	}
 }
 
+func PrintMyDonations(donations []DonationRecord) {
+	for index, donation := range donations {
+		fmt.Printf("- - - My Donation Records No. %d - - - \n", index+1)
+		fmt.Printf("\tName: %s\n", donation.Name)
+		fmt.Printf("\tOng: %s\n", donation.Ong)
+		fmt.Printf("\tAmount: %s\n", donation.Amount)
+		fmt.Printf("\tDescription: %s\n", donation.Description)
+	}
+}
+
 func PrintHosts() {
 	fmt.Println("- - - HOSTS - - -")
 	const first = 0
@@ -239,6 +249,8 @@ func PrintHosts() {
 
 func main() {
 	var dest string
+	var donationsHost []DonationRecord
+
 	end := make(chan int)
 	updatedBlocks := make(chan int)
 	fmt.Print("Enter your host: ")
@@ -263,7 +275,7 @@ func main() {
 	fmt.Println("Welcome to DonationRecordApp! :)")
 	in := bufio.NewReader(os.Stdin)
 	for {
-		fmt.Print("1. New Donation Record\n2. List Donation Records\n3. List Hosts\n")
+		fmt.Print("1. New Donation Record\n2. List Donation Records\n3. List Hosts\n4. List My Donation Records\n")
 		fmt.Print("Enter action(1|2|3):")
 		fmt.Scanf("%d\n", &action)
 		if action == NEWMR {
@@ -282,6 +294,8 @@ func main() {
 			}
 			localBlockChain.AddBlock(newBlock)
 			BroadcastBlock(newBlock)
+			donationsHost = append(donationsHost, donationRecord)
+			
 			fmt.Println("We are processing your transaction, wait ...")
 			time.Sleep(2 * time.Second)
 			fmt.Println("************************************")
@@ -293,6 +307,8 @@ func main() {
 			PrintDonationRecords()
 		} else if action == LISTHOSTS {
 			PrintHosts()
+		} else if action == 4 {
+			PrintMyDonations(donationsHost)
 		}
 	}
 	<-end
