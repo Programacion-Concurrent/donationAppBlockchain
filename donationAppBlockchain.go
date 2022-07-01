@@ -2,7 +2,8 @@ package main
 
 import (
 	"bufio"
-	"encoding/base64"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net"
@@ -157,8 +158,11 @@ type Block struct {
 }
 
 func (block *Block) CalculateHash() string {
-	src := fmt.Sprintf("%d-%s-%s", block.Index, block.Timestamp.String(), block.Data)
-	return base64.StdEncoding.EncodeToString([]byte(src))
+	src:=fmt.Sprintf("%d-%s-%s",block.Index,block.Timestamp.String(),block.Data)
+	h := sha256.New()
+	h.Write([]byte(src))
+	hashed := h.Sum(nil)
+	return hex.EncodeToString(hashed)
 }
 
 type BlockChain struct {
