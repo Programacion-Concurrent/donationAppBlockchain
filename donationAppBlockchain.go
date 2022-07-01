@@ -141,12 +141,9 @@ func BCIPServer(end chan<- int, updatedBlocks chan<- int) {
 
 type DonationRecord struct {
 	Name       string
-	Year       string
-	Hospital   string
-	Doctor     string
-	Diagnostic string
-	Medication string
-	Procedure  string
+	Ong       string
+	Amount   string
+	Description string
 }
 
 type Block struct {
@@ -223,14 +220,11 @@ func PrintDonationRecords() {
 	blocks := localBlockChain.Chain[1:]
 	for index, block := range blocks {
 		donationRecord := block.Data
-		fmt.Printf("- - - Medical Record No. %d - - - \n", index+1)
+		fmt.Printf("- - - Donation Record No. %d - - - \n", index+1)
 		fmt.Printf("\tName: %s\n", donationRecord.Name)
-		fmt.Printf("\tYear: %s\n", donationRecord.Year)
-		fmt.Printf("\tHospital: %s\n", donationRecord.Hospital)
-		fmt.Printf("\tDoctor: %s\n", donationRecord.Doctor)
-		fmt.Printf("\tDiagnostic: %s\n", donationRecord.Diagnostic)
-		fmt.Printf("\tMedication: %s\n", donationRecord.Medication)
-		fmt.Printf("\tProcedure: %s\n", donationRecord.Procedure)
+		fmt.Printf("\tOng: %s\n", donationRecord.Ong)
+		fmt.Printf("\tAmount: %s\n", donationRecord.Amount)
+		fmt.Printf("\tDescription: %s\n", donationRecord.Description)
 	}
 }
 
@@ -266,36 +260,34 @@ func main() {
 		<-updatedBlocks
 	}
 	var action int
-	fmt.Println("Welcome to DonationRecordApp! 😇")
+	fmt.Println("Welcome to DonationRecordApp! :)")
 	in := bufio.NewReader(os.Stdin)
 	for {
-		fmt.Print("1. New Medical Record\n2. List Medical Records\n3. List Hosts\n")
-		fmt.Print("😌 Enter action(1|2|3):")
+		fmt.Print("1. New Donation Record\n2. List Donation Records\n3. List Hosts\n")
+		fmt.Print("Enter action(1|2|3):")
 		fmt.Scanf("%d\n", &action)
 		if action == NEWMR {
 			donationRecord := DonationRecord{}
 			fmt.Println("- - - Register - - -")
-			fmt.Print("Enter name: ")
+			fmt.Print("Enter user name: ")
 			donationRecord.Name, _ = in.ReadString('\n')
-			fmt.Print("Enter year: ")
-			donationRecord.Year, _ = in.ReadString('\n')
-			fmt.Print("Enter hospital: ")
-			donationRecord.Hospital, _ = in.ReadString('\n')
-			fmt.Print("Enter doctor: ")
-			donationRecord.Doctor, _ = in.ReadString('\n')
-			fmt.Print("Enter diagnostic: ")
-			donationRecord.Diagnostic, _ = in.ReadString('\n')
-			fmt.Print("Enter medication: ")
-			donationRecord.Medication, _ = in.ReadString('\n')
-			fmt.Print("Enter procedure: ")
-			donationRecord.Procedure, _ = in.ReadString('\n')
+			fmt.Print("Enter ONG: ")
+			donationRecord.Ong, _ = in.ReadString('\n')
+			fmt.Print("Enter amount: ")
+			donationRecord.Amount, _ = in.ReadString('\n')
+			fmt.Print("Enter a short message for the ONG: ")
+			donationRecord.Description, _ = in.ReadString('\n')			
 			newBlock := Block{
 				Data: donationRecord,
 			}
 			localBlockChain.AddBlock(newBlock)
 			BroadcastBlock(newBlock)
-			fmt.Println("You have registered successfully! 😀")
+			fmt.Println("We are processing your transaction, wait ...")
 			time.Sleep(2 * time.Second)
+			fmt.Println("************************************")
+			fmt.Println("You have registered successfully! :)")
+			fmt.Println("************************************")
+			time.Sleep(1 * time.Second)
 			PrintDonationRecords()
 		} else if action == LISTMR {
 			PrintDonationRecords()
