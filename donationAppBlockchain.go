@@ -182,11 +182,43 @@ func (blockChain *BlockChain) GetLatesBlock() Block {
 	return blockChain.Chain[n-1]
 }
 
+func getMostCommonHash(hashes []Block) string {
+	// ENTRADA: HASHES DE LOS BLOQUES VECINOS
+	m := make(map[string]int)
+  	compare := 0
+  	var mostFrequent string
+
+	for _, h := range hashes {
+		word := h.Hash
+		m[word] = m[word] + 1 
+		if m[word] > compare { 
+			 compare = m[word]  
+			 mostFrequent = h.Hash
+		}
+	}
+	
+	return mostFrequent
+}
+
 func (blockChain *BlockChain) AddBlock(block Block) {
 	block.Timestamp = time.Now()
 	block.Index = blockChain.GetLatesBlock().Index + 1
 	block.PreviousHash = blockChain.GetLatesBlock().Hash
 	block.Hash = block.CalculateHash()
+
+	var hashesInfo []Block
+	blocks := localBlockChain.Chain[1:]
+
+	fmt.Println(block.Hash) // HASH QUE SE GENERA AL CREAR EL BLOQUE
+	if len(blocks) == 0 {
+		
+	}else{
+		for _, block1 := range blocks {
+			hashesInfo = append(hashesInfo, block1)
+		}
+		
+	}
+	fmt.Println(getMostCommonHash(hashesInfo))
 	blockChain.Chain = append(blockChain.Chain, block)
 }
 
