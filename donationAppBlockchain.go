@@ -222,20 +222,6 @@ func (blockChain *BlockChain) AddBlock(block Block) {
 	blockChain.Chain = append(blockChain.Chain, block)
 }
 
-func (blockChain *BlockChain) IsChainValid() bool {
-	n := len(blockChain.Chain)
-	for i := 1; i < n; i++ {
-		currentBlock := blockChain.Chain[i]
-		previousBlock := blockChain.Chain[i-1]
-		if currentBlock.Hash != currentBlock.CalculateHash() {
-			return false
-		}
-		if currentBlock.PreviousHash != previousBlock.Hash {
-			return false
-		}
-	}
-	return true
-}
 
 func CreateBlockChain() BlockChain {
 	bc := BlockChain{}
@@ -308,7 +294,7 @@ func main() {
 	in := bufio.NewReader(os.Stdin)
 	for {
 		fmt.Print("1. New Donation Record\n2. List Donation Records\n3. List Hosts\n4. List My Donation Records\n")
-		fmt.Print("Enter action(1|2|3):")
+		fmt.Print("Enter action(1|2|3|4):")
 		fmt.Scanf("%d\n", &action)
 		if action == NEWMR {
 			donationRecord := DonationRecord{}
